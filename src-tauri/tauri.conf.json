@@ -1,20 +1,20 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "graphic-work",
+  "productName": "graphic",
   "version": "0.1.0",
-  "identifier": "com.vergisst.graphic-work",
+  "identifier": "com.vergisst.graphic",
   "build": {
-    "beforeDevCommand": "bun run dev",
-    "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "bun run build",
-    "frontendDist": "../dist"
+    "frontendDist": "../src"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
-        "title": "graphic-work",
+        "title": "graphic",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "resizable": true,
+        "maximizable": true
       }
     ],
     "security": {

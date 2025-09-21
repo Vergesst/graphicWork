@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Sketchpad</title>
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f0f2f5;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      flex-shrink: 0;
+      margin: 15px 0;
+    }
+
+    canvas {
+      background-color: white;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      cursor: crosshair;
+      width: 95%;
+      flex-grow: 1;
+      margin-bottom: 15px;
+    }
+    
+    .toolbar {
+      flex-shrink: 0;
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 15px;
+      width: 95%;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Digital Sketchpad</h1>
+  <div class="toolbar content">
+    <label for="colorPicker">颜色:</label>
+    <input type="color" id="colorPicker" value="#000000">
+    <label for="brushSize">笔刷大小:</label>
+    <input type="range" id="brushSize" min="1" max="50" value="5">
+    <button id="clearButton">清空画布</button>
+  </div>
+  <canvas id="sketchpad content"></canvas>
+
+  <script>
+    window.addEventListener('load', () => {
+      // ---- 可见的画布 ----
+      const canvas = document.getElementById('sketchpad');
+      const context = canvas.getContext('2d');
+      
+      // ---- 关键点 1: 创建一个内存中的“主画布”作为永久备份 ----
+      const masterCanvas = document.createElement('canvas');
+      const masterContext = masterCanvas.getContext('2d');
+
+      function resizeCanvas() {
+        // 保存主画布的当前内容，以防需要扩大它
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = masterCanvas.width;
+        tempCanvas.height = masterCanvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        if (masterCanvas.width > 0) {
+          tempCtx.drawImage(masterCanvas, 0, 0);
+        }
+        
+        // 获取可见画布的新尺寸
+        const newWidth = canvas.offsetWidth;
+        const newHeight = canvas.offsetHeight;
+
+        // 更新可见画布的绘图区域尺寸
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+
+        // 如果窗口变大，则相应地扩大主画布的尺寸
+        if (newWidth > masterCanvas.width || newHeight > masterCanvas.height) {
+          masterCanvas.width = Math.max(masterCanvas.width, newWidth);
+          masterCanvas.height = Math.max(masterCanvas.height, newHeight);
+          // 将之前保存的内容画回到扩大后的主画布上
+          masterContext.drawImage(tempCanvas, 0, 0);
+        }
+        
+        // 无论如何，都从主画布上恢复图像到可见画布
+        context.drawImage(masterCanvas, 0, 0);
+
+        // 恢复画笔样式
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
+        masterContext.lineCap = 'round';
+        masterContext.lineJoin = 'round';
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      let isDrawing = false;
+      const colorPicker = document.getElementById('colorPicker');
+      const brushSizeSlider = document.getElementById('brushSize');
+      
+      function startDrawing(e) {
+        isDrawing = true;
+        
+        // 同步样式到两个画布
+        context.strokeStyle = masterContext.strokeStyle = colorPicker.value;
+        context.lineWidth = masterContext.lineWidth = brushSizeSlider.value;
+        
+        // 关键点 2: 同时在两个画布上开始路径
+        context.beginPath();
+        context.moveTo(e.offsetX, e.offsetY);
+        masterContext.beginPath();
+        masterContext.moveTo(e.offsetX, e.offsetY);
+      }
+
+      function stopDrawing() { 
+        isDrawing = false; 
+      }
+
+      function draw(e) {
+        if (!isDrawing) return;
+        
+        // 关键点 3: 同时在两个画布上进行绘制
+        context.lineTo(e.offsetX, e.offsetY);
+        context.stroke();
+        masterContext.lineTo(e.offsetX, e.offsetY);
+        masterContext.stroke();
+      }
+      
+      function clearCanvas() {
+        // 关键点 4: 同时清空两个画布
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        masterContext.clearRect(0, 0, masterCanvas.width, masterCanvas.height);
+      }
+
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseleave', stopDrawing);
+      document.getElementById('clearButton').addEventListener('click', clearCanvas);
+    });
+  </script>
+
+</body>
+</html>
+
