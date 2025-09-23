@@ -1,0 +1,60 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: rgb(15, 15, 15);
+  background-color: rgb(246, 246, 246);
+  font-synthesis: none;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+  text-size-adjust: 100%;
+  --menu-color: rgba(0, 0, 0, 0.2);
+}
+
+.container {
+  margin: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  color: rgb(15, 15, 15);
+  background-color: var(--menu-color);
+  transition: border-color 0.25s;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: rgba(0, 0, 0, 0.225);
+}
+
+button:active {
+  border-color: rgba(0, 0, 0, 0.325);
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.menu-wrapper {
+  display: flex;
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+  gap: 8px;
+}
+
+.controller {
+  background-color: var(--menu-color);
+  padding: 8px;
+  border-radius: 12px;
+}
