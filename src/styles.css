@@ -58,3 +58,8 @@ button:active {
   padding: 8px;
   border-radius: 12px;
 }
+
+/* elements for logical operations */
+.color-picker {
+  display: none;
+}
