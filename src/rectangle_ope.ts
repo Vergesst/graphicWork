@@ -1,3 +1,0 @@
-import { Rect } from 'fabric'
-
-
