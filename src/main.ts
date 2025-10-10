@@ -1,4 +1,5 @@
 import { Canvas, Rect, InteractiveFabricObject, Circle, Line, FabricObject } from 'fabric'
+import { save_file, open_file } from './file_handler'
 
 type PaintTool = 'rect' | 'circ' | 'line' | null
 
@@ -34,9 +35,12 @@ let start_y = 0
 let current_shape: FabricObject | null = null
 
 // get html elements
+const save_btn = document.getElementById('save-btn') as HTMLButtonElement
+const load_btn = document.getElementById('load-btn') as HTMLButtonElement
 const remove_btn = document.getElementById('remove-btn') as HTMLButtonElement
 const color_btn = document.getElementById('color-btn') as HTMLButtonElement
 const color_picker = document.getElementById('color-picker') as HTMLInputElement
+
 // painter tools
 let rect_btn = document.getElementById('draw-rect-btn') as HTMLButtonElement
 let circ_btn = document.getElementById('draw-circ-btn') as HTMLButtonElement
@@ -195,3 +199,6 @@ canvas.on('mouse:up', () => {
   
   canvas.renderAll()
 })
+
+save_btn.addEventListener('click', () => save_file(canvas))
+load_btn.addEventListener('click', () => open_file(canvas))
