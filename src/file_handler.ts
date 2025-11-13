@@ -2,6 +2,11 @@ import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { Canvas } from "fabric";
 
+export {
+  open_file,
+  save_file
+}
+
 /**
  * If find error about writing --- find [default.json](src-tauri/capabilities/default.json)
  * @param canvas --- where you are currently painting
@@ -31,7 +36,7 @@ async function save_file(canvas: Canvas) {
 }
 
 /**
- * 
+ * used to choose which json file to open as picture
  * @param canvas --- the main canvas
  */
 async function open_file(canvas: Canvas) {
@@ -58,9 +63,4 @@ async function open_file(canvas: Canvas) {
   } catch (err) {
     console.error(err)
   }
-}
-
-export {
-  open_file,
-  save_file
 }
